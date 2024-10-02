@@ -93,6 +93,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>dmss</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
