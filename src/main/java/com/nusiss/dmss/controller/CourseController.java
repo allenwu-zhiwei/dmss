@@ -65,7 +65,7 @@ public class CourseController {
     public ResponseEntity<ApiResponse<Course>> updateCourse(@PathVariable Integer id, @RequestBody Course updatedCourse) {
         Optional<Course> existingCourse = courseService.getCourseById(id);
         if (existingCourse.isPresent()) {
-            updatedCourse.setCourseID(id);
+            updatedCourse.setCourseId(id);
             Course savedCourse = courseService.saveCourse(updatedCourse);
             return ResponseEntity.ok(new ApiResponse<>(true, "Course updated successfully", savedCourse));
         } else {
