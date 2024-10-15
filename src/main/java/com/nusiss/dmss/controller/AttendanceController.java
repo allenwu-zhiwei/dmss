@@ -49,7 +49,7 @@ public class AttendanceController {
                                          @RequestBody AttendanceRecord updateRecord){
         // 调用策略更新出勤记录
         updateAttendanceStrategy.updateAttendanceRecord(studentId, courseId, updateRecord);
-        return "Attendance record created successfully!";
+        return "Attendance record updated successfully!";
     }
 
     //查找操作实现
