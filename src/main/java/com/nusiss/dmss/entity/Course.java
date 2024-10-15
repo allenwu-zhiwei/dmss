@@ -27,10 +27,10 @@ public class Course {
     private String courseDescription;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime courseStartDate;
+    private LocalDateTime startDate;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime courseEndDate;
+    private LocalDateTime endDate;
 
     @Column(nullable = false)
     private Integer credits;
@@ -44,10 +44,10 @@ public class Course {
     private Status status;
 
     @Column(nullable = false,columnDefinition = "TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime createDate;
+    private LocalDateTime createDatetime;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime updateDate;
+    private LocalDateTime updateDatetime;
 
     private String createUser;
     private String updateUser;
