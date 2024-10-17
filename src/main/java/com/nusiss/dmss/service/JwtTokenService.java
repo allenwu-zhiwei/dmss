@@ -49,7 +49,7 @@ public class JwtTokenService {
                 .compact();
     }
 
-    // Set the JWT token in the cookie and add it to the response
+    /*// Set the JWT token in the cookie and add it to the response
     public void addTokenToCookie(HttpServletResponse response, String token) {
         Cookie authCookie = new Cookie("authCookie", token);
         authCookie.setHttpOnly(true); // To prevent JavaScript access to the cookie
@@ -58,5 +58,5 @@ public class JwtTokenService {
         authCookie.setSecure(false);
         authCookie.setAttribute("SameSite", "Lax");
         response.addCookie(authCookie);
-    }
+    }*/
 }
