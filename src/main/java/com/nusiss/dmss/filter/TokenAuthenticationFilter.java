@@ -42,9 +42,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter  {
         String url = request.getRequestURI();
         String method = request.getMethod().toString();
         try{
-            String token = request.getHeader("authToken");
-            if(!url.contains("login") && !url.contains("swagger") && !url.contains("api-docs")){
-                if (token != null && !StringUtils.isEmpty(token)) {
+            // 获取 Authorization 头
+            String authorizationHeader = request.getHeader("Authorization");
+            if (!url.contains("login") && !url.contains("swagger") && !url.contains("api-docs")) {
+                // 检查 Authorization 头并解析 token
+                if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                    // 提取 token（去掉 "Bearer " 前缀）
+                    String token = authorizationHeader.substring(7);
                     try {
                             boolean isValidated = validateToken(token);
                             if(!isValidated){
