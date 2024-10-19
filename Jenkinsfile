@@ -6,7 +6,7 @@ pipeline {
         SERVER_IP = 'do001-why-ubuntu'        		// 服务器IP地址
         SERVER_USER = 'root'    					// 服务器用户名
         TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
-        JAR_FILE = 'JenkinsTest.jar'                // 打包后的文件名
+        JAR_FILE = 'dmss.jar'                // 打包后的文件名
     }
 
     stages {
