@@ -7,6 +7,9 @@ pipeline {
         SERVER_USER = 'root'    					// 服务器用户名
         TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
         JAR_FILE = 'dmss.jar'                // 打包后的文件名
+        ZAP_DOCKER_IMAGE = 'owasp/zap2docker-stable' // ZAP Docker 镜像
+        ZAP_PORT = '8081'                        // ZAP 监听的端口
+        TARGET_URL = 'http://128.199.224.162:8080'    // 需要扫描的目标 URL
     }
 
     stages {
@@ -37,6 +40,23 @@ pipeline {
                 ansiColor('xterm') {
                       // 运行测试
                       sh 'mvn test'
+                }
+            }
+        }
+        stage('OWASP ZAP Scan') {
+            steps {
+                script {
+            // 定义时间戳
+            def timestamp = new Date().format("yyyyMMdd_HHmmss")
+            def reportFileName = "zap_report_${timestamp}.html"
+
+            // 在 Docker 中运行 ZAP 并扫描目标 URL，生成带时间戳的报告
+            sh """
+                docker run -t -u zap -p ${ZAP_PORT}:${ZAP_PORT} -v \$(pwd):/zap/wrk owasp/zap2docker-stable zap.sh -cmd -quickurl ${TARGET_URL} -quickout /zap/wrk/${reportFileName}
+            """
+
+            // 将 ZAP 报告移动到 Jenkins 工作空间
+            sh "mv ./${reportFileName} ./${reportFileName}"
                 }
             }
         }
