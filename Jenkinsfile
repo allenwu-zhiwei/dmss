@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         // 定义环境变量
-        SERVER_IP = 'ip-172-31-26-90'        				// 服务器IP地址
-        SERVER_USER = 'ubuntu'    					// 服务器用户名
+        SERVER_IP = 'do001-why-ubuntu'        		// 服务器IP地址
+        SERVER_USER = 'root'    					// 服务器用户名
         TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
-        JAR_FILE = 'dmss.jar'                // 打包后的文件名
+        JAR_FILE = 'JenkinsTest.jar'                // 打包后的文件名
     }
 
     stages {
@@ -19,8 +19,11 @@ pipeline {
         }
         stage('Build Project') {
             steps {
-                // 使用 Maven 构建项目
-                sh 'mvn clean package -DskipTests'
+                ansiColor('xterm')
+                    {
+                        // 使用 Maven 构建项目
+                        sh 'mvn clean package -DskipTests'
+                    }
             }
         }
         stage('Verify Build Output') {
@@ -31,8 +34,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // 运行测试
-                sh 'mvn test'
+                ansiColor('xterm') {
+                      // 运行测试
+                      sh 'mvn test'
+                }
             }
         }
         stage('Deploy') {
