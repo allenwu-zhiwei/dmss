@@ -3,12 +3,12 @@ pipeline {
 
     environment {
         // 定义环境变量
-        SERVER_IP = 'do001-why-ubuntu'                // 服务器IP地址
-        SERVER_USER = 'root'                           // 服务器用户名
-        TARGET_DIR = '/opt/module'                     // 服务器上的目标目录
-        JAR_FILE = 'dmss.jar'                          // 打包后的文件名
-        ZAP_DOCKER_IMAGE = 'zaproxy/zap-stable'       // ZAP Docker 镜像
-        ZAP_PORT = '8081'                              // ZAP 监听的端口
+        SERVER_IP = 'do001-why-ubuntu'        		// 服务器IP地址
+        SERVER_USER = 'root'    					// 服务器用户名
+        TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
+        JAR_FILE = 'dmss.jar'                // 打包后的文件名
+        ZAP_DOCKER_IMAGE = 'zaproxy/zap-stable' // ZAP Docker 镜像
+        ZAP_PORT = '8081'                        // ZAP 监听的端口
         TARGET_URL = 'http://128.199.224.162:8080'    // 需要扫描的目标 URL
     }
 
@@ -16,15 +16,17 @@ pipeline {
         stage('Clone Source Code') {
             steps {
                 // 拉取项目源码
+                //注意: 这里根据自己的需求选择合适的分支以及仓库地址（ssh或https）
                 git branch: 'master', url: 'https://github.com/allenwu-zhiwei/dmss.git'
             }
         }
         stage('Build Project') {
             steps {
-                ansiColor('xterm') {
-                    // 使用 Maven 构建项目
-                    sh 'mvn clean package -DskipTests'
-                }
+                ansiColor('xterm')
+                    {
+                        // 使用 Maven 构建项目
+                        sh 'mvn clean package -DskipTests'
+                    }
             }
         }
         stage('Verify Build Output') {
@@ -36,28 +38,36 @@ pipeline {
         stage('Test') {
             steps {
                 ansiColor('xterm') {
-                    // 运行测试
-                    sh 'mvn test'
+                      // 运行测试
+                      sh 'mvn test'
                 }
             }
         }
-        stage('OWASP ZAP Scan') {
-            steps {
-                script {
-                    // 定义时间戳
-                    def timestamp = new Date().format("yyyyMMdd_HHmmss")
-                    def reportFileName = "zap_report_${timestamp}.html"
+    stage('OWASP ZAP Scan') {
+         steps {
+            script {
+            // 定义时间戳
+            def timestamp = new Date().format("yyyyMMdd_HHmmss")
+            def reportFileName = "zap_report_${timestamp}.html"
 
-                    // 在 Docker 中运行 ZAP 并扫描目标 URL，生成带时间戳的报告
-                    sh """
-                        docker run -t -u zap -p ${ZAP_PORT}:${ZAP_PORT} -v \$(pwd):/zap/wrk ${ZAP_DOCKER_IMAGE} zap.sh -cmd -quickurl ${TARGET_URL} -quickout /zap/wrk/${reportFileName}
-                    """
+            // 在 Docker 中运行 ZAP 并扫描目标 URL，生成带时间戳的报告
+            def zapContainerId = sh(script: """
+                docker run -d -u root -p ${ZAP_PORT}:${ZAP_PORT} -v \$(pwd):/zap/wrk zaproxy/zap-stable zap.sh -cmd -quickurl ${TARGET_URL} -quickout /zap/wrk/${reportFileName}
+            """, returnStdout: true).trim()
 
-                    // 将 ZAP 报告移动到 Jenkins 工作空间
-                    sh "mv ./${reportFileName} ./${reportFileName}"
-                }
-            }
+            // 等待 ZAP 完成扫描（可选，可以根据需要设置等待时间）
+            sleep(time: 30, unit: 'SECONDS')
+
+            // 拷贝生成的报告文件到 Jenkins 工作空间
+            sh """
+                docker cp ${zapContainerId}:/zap/wrk/${reportFileName} ./
+            """
+
+            // 清理 ZAP 容器
+            sh "docker rm -f ${zapContainerId}"
         }
+    }
+}
         stage('Deploy') {
             // 部署到远程服务器
             steps {
