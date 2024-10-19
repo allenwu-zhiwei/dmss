@@ -60,7 +60,7 @@ pipeline {
 
             // 拷贝生成的报告文件到 Jenkins 工作空间
             sh """
-                docker cp ${zapContainerId}:/zap/wrk/${reportFileName} ./
+                docker cp ${zapContainerId}:/zap/wrk/${reportFileName} /opt/files/zap/
             """
 
             // 清理 ZAP 容器
