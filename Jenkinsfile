@@ -7,7 +7,7 @@ pipeline {
         SERVER_USER = 'root'    					// 服务器用户名
         TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
         JAR_FILE = 'dmss.jar'                // 打包后的文件名
-        ZAP_DOCKER_IMAGE = 'owasp/zap2docker-stable' // ZAP Docker 镜像
+        ZAP_DOCKER_IMAGE = 'zaproxy/zap-stable' // ZAP Docker 镜像
         ZAP_PORT = '8081'                        // ZAP 监听的端口
         TARGET_URL = 'http://128.199.224.162:8080'    // 需要扫描的目标 URL
     }
