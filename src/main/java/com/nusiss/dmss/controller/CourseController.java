@@ -5,9 +5,13 @@ import com.nusiss.dmss.entity.Course;
 import com.nusiss.dmss.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,5 +91,27 @@ public class CourseController {
         } else {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, "Course not found", null));
         }
+    }
+
+    /**
+     * 分页
+     * @param course
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/page")
+    public ResponseEntity<ApiResponse<Page<Course>>> getCoursesWithFilters(
+            Course course,  // 使用Course实体来接收前端传入的查询条件
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (course == null) {
+            course = new Course();
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> courses = courseService.getCoursesWithFilters(course, pageable);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Courses retrieved successfully", courses));
     }
 }

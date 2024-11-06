@@ -3,6 +3,9 @@ package com.nusiss.dmss.service;
 import com.nusiss.dmss.dao.CourseRepository;
 import com.nusiss.dmss.entity.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,5 +35,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Integer id) {
         courseRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Course> getCoursesWithFilters(Course course, Pageable pageable) {
+        // 创建一个Example对象，用来执行动态查询
+        Example<Course> example = Example.of(course);
+        return courseRepository.findAll(example, pageable);
     }
 }
