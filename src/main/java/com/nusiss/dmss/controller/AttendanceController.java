@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/attendance")
+@RequestMapping("/api/v1/attendance")
 public class AttendanceController {
 
     // 创建出勤记录
