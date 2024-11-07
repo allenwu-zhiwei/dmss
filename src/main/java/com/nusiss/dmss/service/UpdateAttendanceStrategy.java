@@ -28,7 +28,7 @@ public class UpdateAttendanceStrategy implements AttendanceOperation{
             existingRecord.setTeacherId(updatedRecord.getTeacherId());    // 更新教师ID
             attendanceRepository.save(existingRecord);
         } else {
-            throw new RuntimeException("出勤记录不存在");
+            throw new RuntimeException("Attendance records do not exist!");
         }
     }
     //增加/创建出勤记录
