@@ -2,90 +2,109 @@ pipeline {
     agent any
 
     environment {
-        // 定义环境变量
-        SERVER_IP = 'do001-why-ubuntu'        		// 服务器IP地址
-        SERVER_USER = 'root'    					// 服务器用户名
-        TARGET_DIR = '/opt/module'                  // 服务器上的目标目录
-        JAR_FILE = 'dmss.jar'                // 打包后的文件名
-        ZAP_DOCKER_IMAGE = 'zaproxy/zap-stable' // ZAP Docker 镜像
-        ZAP_PORT = '8081'                        // ZAP 监听的端口
-        TARGET_URL = 'http://128.199.224.162:8080'    // 需要扫描的目标 URL
+        SERVER_IP = 'do001-why-ubuntu'        		// server ip
+        SERVER_USER = 'root'    					// server username
+        TARGET_DIR = '/opt/module'                  // server target directory
+        JAR_FILE = 'dmss.jar'                // jar file name
+        ZAP_DOCKER_IMAGE = 'zaproxy/zap-stable' // ZAP Docker image
+        ZAP_PORT = '8081'                        // ZAP listening port
+        TARGET_URL = 'http://128.199.224.162:8080'    // ZAP scanning URL
+        SONARQUBE_SERVER = 'SonarCloud' // Name of the SonarCloud server in Jenkins
+        SONAR_PROJECT_KEY = 'WUHAOYI_dmss' // Your SonarCloud project key
+        SONAR_ORG = 'wuhaoyi' // Your SonarCloud organization key
+        SONAR_TOKEN = credentials('Sonarcloud-Credential') // Jenkins credential storing SonarCloud token
     }
 
     stages {
         stage('Clone Source Code') {
             steps {
-                // 拉取项目源码
-                //注意: 这里根据自己的需求选择合适的分支以及仓库地址（ssh或https）
+                // checkout code from git
                 git branch: 'master', url: 'https://github.com/allenwu-zhiwei/dmss.git'
             }
         }
+
         stage('Build Project') {
             steps {
                 ansiColor('xterm')
                     {
-                        // 使用 Maven 构建项目
+                        // build project
                         sh 'mvn clean package -DskipTests'
                     }
             }
         }
+
         stage('Verify Build Output') {
-            // 验证构建结果
+            // Verify the build output
             steps {
                 sh 'ls -l target/'
             }
         }
+
+        stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv(SONARQUBE_SERVER) {
+                    // Run SonarCloud analysis using Maven
+                    sh """
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.organization=${SONAR_ORG} \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 ansiColor('xterm') {
-                      // 运行测试
+                      // run test
                       sh 'mvn test'
                 }
             }
         }
-    stage('OWASP ZAP Scan') {
-         steps {
-            script {
-            // 定义时间戳
-            def timestamp = new Date().format("yyyyMMdd_HHmmss")
-            def reportFileName = "zap_report_${timestamp}.html"
-
-            // 在 Docker 中运行 ZAP 并扫描目标 URL，生成带时间戳的报告
-            def zapContainerId = sh(script: """
-                docker run -d -u root -p ${ZAP_PORT}:${ZAP_PORT} -v \$(pwd):/zap/wrk zaproxy/zap-stable zap.sh -cmd -quickurl ${TARGET_URL} -quickout /zap/wrk/${reportFileName}
-            """, returnStdout: true).trim()
-
-            // 等待 ZAP 完成扫描（可选，可以根据需要设置等待时间）
-            sleep(time: 30, unit: 'SECONDS')
-
-            // 拷贝生成的报告文件到 Jenkins 工作空间
-            sh """
-                docker cp ${zapContainerId}:/zap/wrk/${reportFileName} /opt/files/zap/
-            """
-
-            // 清理 ZAP 容器
-            sh "docker rm -f ${zapContainerId}"
-        }
-    }
-}
-        stage('Deploy') {
-            // 部署到远程服务器
+        stage('OWASP ZAP Scan') {
             steps {
                 script {
-                    // StrictHostKeyChecking=no 表示不检查远程主机的公钥 建议配置好ssh的免密登录
-                    // Step 1: 传输文件到远程服务器 scp -v 可以查看文件传输的进度
+                    // define a timestamp for the report file
+                    def timestamp = new Date().format("yyyyMMdd_HHmmss")
+                    def reportFileName = "zap_report_${timestamp}.html"
+
+                    // run ZAP scan in a Docker container
+                    def zapContainerId = sh(script: """
+                        docker run -d -u root -p ${ZAP_PORT}:${ZAP_PORT} -v \$(pwd):/zap/wrk zaproxy/zap-stable zap.sh -cmd -quickurl ${TARGET_URL} -quickout /zap/wrk/${reportFileName}
+                    """, returnStdout: true).trim()
+
+                    // wait for the scan to finish
+                    sleep(time: 30, unit: 'SECONDS')
+
+                    // copy the report file from the container to the target directory
+                    sh """
+                        docker cp ${zapContainerId}:/zap/wrk/${reportFileName} /opt/files/zap/
+                    """
+
+                    // stop and remove the container
+                    sh "docker rm -f ${zapContainerId}"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            // Deploy the application to the server
+            steps {
+                script {
+                    // Step 1: upload jar file to server ( scp -v can show more details)
                     sh """
                         scp -v -o StrictHostKeyChecking=no target/${JAR_FILE} ${SERVER_USER}@${SERVER_IP}:${TARGET_DIR}
                     """
 
-                    // Step 2: 杀死已存在的进程
+                    // Step 2: kill the existing process
                     def killStatus = sh(script: """
                         ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'pgrep -f ${JAR_FILE} | xargs kill -9 || true'
                     """, returnStatus: true)
 
                     echo "Kill process exit status: ${killStatus}"
 
-                    // Step 3: 启动新的进程
+                    // Step 3: start the new process
                     sh """
                         ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'nohup java -jar ${TARGET_DIR}/${JAR_FILE} > /dev/null 2>&1 &'
                     """
@@ -96,7 +115,7 @@ pipeline {
 
     post {
         always {
-            // 每次构建结束后清理工作目录
+            // clean workspace
             cleanWs()
         }
         success {
