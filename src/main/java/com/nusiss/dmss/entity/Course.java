@@ -53,8 +53,8 @@ public class Course {
     //@JoinColumn(name = "user_id",nullable = false)
     //private User user;
 
-    @Column
-    private Integer teacherId;
+    @Column(nullable = false)
+    private String teacherName;
 
     private String createUser;
     private String updateUser;
