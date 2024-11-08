@@ -46,12 +46,12 @@ public class EnrollmentController {
 
     /**
      * 根据学生id查询所有选课信息
-     * @param userId
+     * @param studentId
      * @return
      */
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<Enrollment>>> getEnrollmentsByUserId(@PathVariable Integer userId) {
-        List<Enrollment> enrollments = enrollmentService.getEnrollmentsByUserId(userId);
+    @GetMapping("/user/{studentId}")
+    public ResponseEntity<ApiResponse<List<Enrollment>>> getEnrollmentsByStudentrId(@PathVariable Integer studentId) {
+        List<Enrollment> enrollments = enrollmentService.getEnrollmentsByStudentId(studentId);
         return ResponseEntity.ok(new ApiResponse<>(true, "Enrollments retrieved successfully", enrollments));
     }
 
@@ -87,7 +87,7 @@ public class EnrollmentController {
     public ResponseEntity<ApiResponse<Enrollment>> updateEnrollment(@PathVariable Integer id, @RequestBody Enrollment updatedEnrollment) {
         Optional<Enrollment> existingEnrollment = enrollmentService.getEnrollmentById(id);
         if (existingEnrollment.isPresent()) {
-            updatedEnrollment.setEnrollmentid(id);
+            updatedEnrollment.setEnrollmentId(id);
             Enrollment savedEnrollment = enrollmentService.saveEnrollment(updatedEnrollment);
             return ResponseEntity.ok(new ApiResponse<>(true, "Enrollment updated successfully", savedEnrollment));
         } else {

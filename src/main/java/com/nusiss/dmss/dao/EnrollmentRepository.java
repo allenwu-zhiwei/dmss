@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
-    List<Enrollment> findByUser_UserId(Integer userId);
+    //List<Enrollment> findByStudent_StudentId(Integer studentId);
+    List<Enrollment> findByStudentId(Integer studentId);
     List<Enrollment> findByCourse_CourseId(Integer courseId);
 }
