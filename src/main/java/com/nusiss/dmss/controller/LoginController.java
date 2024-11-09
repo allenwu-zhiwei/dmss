@@ -23,16 +23,35 @@ public class LoginController {
     private JwtTokenService jwtTokenService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<ApiResponse<String>> login(HttpServletResponse response, @RequestBody Map<String, String> requestParams) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> login(HttpServletResponse response, @RequestBody Map<String, String> requestParams) {
         String username = requestParams.get("username");
         String password = requestParams.get("password");
 
-        String token = loginService.login(username, password);
-        //jwtTokenService.addTokenToCookie(response, token);
+        Map<String, Object> loginResponse = loginService.login(username, password);
 
-        return ResponseEntity.status(200).body(new ApiResponse<>(true, "Login successfully", token));
-
-
+        return ResponseEntity.status(200).body(new ApiResponse<>(true, "Login successfully", loginResponse));
     }
-
 }
+//@RestController
+//public class LoginController {
+//
+//    @Autowired
+//    private LoginService loginService;
+//
+//    @Autowired
+//    private JwtTokenService jwtTokenService;
+//
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    public ResponseEntity<ApiResponse<String>> login(HttpServletResponse response, @RequestBody Map<String, String> requestParams) {
+//        String username = requestParams.get("username");
+//        String password = requestParams.get("password");
+//
+//        String token = loginService.login(username, password);
+//        //jwtTokenService.addTokenToCookie(response, token);
+//
+//        return ResponseEntity.status(200).body(new ApiResponse<>(true, "Login successfully", token));
+//
+//
+//    }
+//
+//}
