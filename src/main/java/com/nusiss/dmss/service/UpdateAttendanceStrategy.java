@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-@Component("updateAttendanceStrategy")
+
 @Service
 public class UpdateAttendanceStrategy implements AttendanceOperation{
     @Autowired

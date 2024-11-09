@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Component("deleteAttendanceStrategy")
+
 @Service
 public class DeleteAttendanceStrategy implements AttendanceOperation{
     @Autowired
