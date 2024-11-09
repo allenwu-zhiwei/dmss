@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,11 +63,16 @@ class UpdateAttendanceStrategyTest {
         // 使用固定时间进行断言
         assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getAttendanceDate());  // 确保出勤时间被更新为12点
         assertEquals("OnTime",existingRecord.getRemarks());
-        assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getUpdateDatetime());
-        // 使用固定时间进行断言
-        assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getUpdateDatetime());
+
         assertEquals("Teacher2",existingRecord.getUpdateUser());
         assertEquals(2,existingRecord.getTeacherId());
+        // 使用误差范围验证时间
+        Duration tolerance = Duration.ofSeconds(1);
+        assertTrue(
+                Duration.between(existingRecord.getUpdateDatetime(), LocalDateTime.now()).abs().compareTo(tolerance) <= 0,
+                "UpdateDatetime is outside the acceptable range"
+        );
+
         verify(attendanceRepository, times(1)).save(existingRecord);  // 验证保存方法被调用一次
     }
 
