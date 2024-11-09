@@ -49,9 +49,12 @@ public class Course {
     @Column(columnDefinition = "TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updateDatetime;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    //@ManyToOne
+    //@JoinColumn(name = "user_id",nullable = false)
+    //private User user;
+
+    @Column(nullable = false)
+    private String teacherName;
 
     private String createUser;
     private String updateUser;

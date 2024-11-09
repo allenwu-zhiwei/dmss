@@ -25,13 +25,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public List<Enrollment> getEnrollmentsByUserId(Integer userId) {
-        return enrollmentRepository.findByUser_UserId(userId);
+    public List<Enrollment> getEnrollmentsByStudentId(Integer studentId) {
+        return enrollmentRepository.findByStudentId(studentId);
     }
 
     @Override
     public List<Enrollment> getEnrollmentsByCourseId(Integer courseId) {
-        return enrollmentRepository.findByCourse_CourseId(courseId);
+        return enrollmentRepository.findByCourseId(courseId);
     }
 
     @Override
