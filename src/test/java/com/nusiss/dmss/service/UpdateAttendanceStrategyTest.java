@@ -37,7 +37,7 @@ class UpdateAttendanceStrategyTest {
         existingRecord.setAttendanceDate(LocalDateTime.of(2024, 11, 8, 10, 0));  // 设置出勤日期为2024年11月8日上午10点
         existingRecord.setStatus("Absent");  // 设置出勤状态为“Absent”
         existingRecord.setRemarks("Late");  //设置备注
-        existingRecord.setUpdateDatetime(LocalDateTime.now());
+        existingRecord.setUpdateDatetime(LocalDateTime.of(2024, 11, 8, 10, 0));
         existingRecord.setUpdateUser("Teacher1");
         existingRecord.setTeacherId(1);
 
@@ -47,7 +47,7 @@ class UpdateAttendanceStrategyTest {
         updatedRecord.setAttendanceDate(LocalDateTime.of(2024, 11, 8, 12, 0));  // 设置更新后的出勤日期为2024年11月8日下午12点
         updatedRecord.setStatus("Present");  // 设置更新后的出勤状态为“Present”
         updatedRecord.setRemarks("OnTime");  //设置备注
-        updatedRecord.setUpdateDatetime(LocalDateTime.now());
+        updatedRecord.setUpdateDatetime(LocalDateTime.of(2024, 11, 8, 12, 0));
         updatedRecord.setUpdateUser("Teacher2");
         updatedRecord.setTeacherId(2);
 
@@ -60,9 +60,12 @@ class UpdateAttendanceStrategyTest {
 
         // 验证更新后的记录
         assertEquals("Present", existingRecord.getStatus());  // 确保状态被更新为“Present”
+        // 使用固定时间进行断言
         assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getAttendanceDate());  // 确保出勤时间被更新为12点
         assertEquals("OnTime",existingRecord.getRemarks());
-        assertEquals(LocalDateTime.now(),LocalDateTime.now());
+        assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getUpdateDatetime());
+        // 使用固定时间进行断言
+        assertEquals(LocalDateTime.of(2024, 11, 8, 12, 0), existingRecord.getUpdateDatetime());
         assertEquals("Teacher2",existingRecord.getUpdateUser());
         assertEquals(2,existingRecord.getTeacherId());
         verify(attendanceRepository, times(1)).save(existingRecord);  // 验证保存方法被调用一次
