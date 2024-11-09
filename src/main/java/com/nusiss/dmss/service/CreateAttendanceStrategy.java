@@ -4,11 +4,12 @@ package com.nusiss.dmss.service;
 import com.nusiss.dmss.dao.AttendanceRepository;
 import com.nusiss.dmss.entity.AttendanceRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Component("createAttendanceStrategy")
 @Service
 public class CreateAttendanceStrategy implements AttendanceOperation {
     @Autowired
@@ -34,7 +35,9 @@ public class CreateAttendanceStrategy implements AttendanceOperation {
 
         }
         //如果已经存在出勤记录，则抛出异常"出勤记录已存在"
-        throw new RuntimeException("Attendance records already exist!");
+        else {
+            throw new RuntimeException("Attendance records already exist!");
+        }
     }
 
     //删除出勤记录

@@ -3,10 +3,11 @@ package com.nusiss.dmss.service;
 import com.nusiss.dmss.dao.AttendanceRepository;
 import com.nusiss.dmss.entity.AttendanceRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Component("deleteAttendanceStrategy")
 @Service
 public class DeleteAttendanceStrategy implements AttendanceOperation{
     @Autowired
