@@ -15,9 +15,11 @@ public class Notifications {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int notificationId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    //@ManyToOne
+    //@JoinColumn(name = "user_id",nullable = false)
+    //private User user;
+    @Column(nullable = false)
+    private Integer userId;
 
     @Column(nullable = false)
     private String message;

@@ -8,5 +8,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notifications, Integer> {
-    List<Notifications> findByUser_UserId(Integer userId);
+    List<Notifications> findByUserId(Integer userId);
 }
