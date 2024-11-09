@@ -25,8 +25,9 @@ public class Enrollment {
     @Column
     private Integer studentId;
 
-    @Column(name = "course_id",nullable = false)  // 数据库列名是 student_id
-    private Integer courseId;
+    @ManyToOne
+    @JoinColumn(name = "course_id",nullable = false)  // 数据库列名是 student_id
+    private Course course;
 
     @Column(nullable = false,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime enrollmentDate;
