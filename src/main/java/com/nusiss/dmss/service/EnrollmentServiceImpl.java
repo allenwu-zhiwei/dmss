@@ -31,7 +31,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<Enrollment> getEnrollmentsByCourseId(Integer courseId) {
-        return enrollmentRepository.findByCourse_CourseId(courseId);
+        return enrollmentRepository.findByCourseId(courseId);
     }
 
     @Override
