@@ -12,9 +12,9 @@ public interface GradeService {
 
     public Optional<Grade> getGradeById(Integer id);
 
-    public Optional<Grade> getGradeByStudentId(Integer studentId);
+    public List<Grade> getGradeByStudentId(Integer studentId);
 
-    public Optional<Grade> getGradeByCourseId(Integer courseId);
+    public List<Grade> getGradeByCourseId(Integer courseId);
 
     public Grade saveGrade(Grade grade);
 

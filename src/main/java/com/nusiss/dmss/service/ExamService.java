@@ -11,7 +11,7 @@ public interface ExamService {
 
     Optional<Exam> getExamById(Integer id);
 
-    Optional<Exam> getExamsByCourseId(Integer courseId);
+    List<Exam> getExamsByCourseId(Integer courseId);
 
     Exam saveExam(Exam exam);
 
