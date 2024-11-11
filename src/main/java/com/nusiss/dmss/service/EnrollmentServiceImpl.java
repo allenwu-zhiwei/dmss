@@ -43,4 +43,5 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void deleteEnrollment(Integer id) {
         enrollmentRepository.deleteById(id);
     }
+
 }

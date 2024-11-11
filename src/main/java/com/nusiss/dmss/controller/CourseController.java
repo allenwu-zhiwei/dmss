@@ -1,6 +1,7 @@
 package com.nusiss.dmss.controller;
 
 import com.nusiss.dmss.config.ApiResponse;
+import com.nusiss.dmss.dto.CourseReportDTO;
 import com.nusiss.dmss.entity.Course;
 import com.nusiss.dmss.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
@@ -113,5 +114,10 @@ public class CourseController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Course> courses = courseService.getCoursesWithFilters(course, pageable);
         return ResponseEntity.ok(new ApiResponse<>(true, "Courses retrieved successfully", courses));
+    }
+
+    @GetMapping("/report/{courseId}")
+    public CourseReportDTO getCourseReport(@PathVariable Integer courseId) {
+        return courseService.getCourseReport(courseId);
     }
 }

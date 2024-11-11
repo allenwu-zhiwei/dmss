@@ -1,21 +1,32 @@
 package com.nusiss.dmss.service;
 
 import com.nusiss.dmss.dao.CourseRepository;
+import com.nusiss.dmss.dto.CourseReportDTO;
+import com.nusiss.dmss.dto.CourseReportDTO.StudentGradeDTO;
 import com.nusiss.dmss.entity.Course;
+import com.nusiss.dmss.entity.Enrollment;
+import com.nusiss.dmss.entity.Grade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private EnrollmentService enrollmentService;
+
+    @Autowired
+    private GradeService gradeService;
 
     @Override
     public List<Course> getAllCourses() {
@@ -43,4 +54,54 @@ public class CourseServiceImpl implements CourseService {
         Example<Course> example = Example.of(course);
         return courseRepository.findAll(example, pageable);
     }
+
+    @Override
+    public CourseReportDTO getCourseReport(Integer courseId) {
+        // 获取所有选修此课程的学生的 Enrollment 列表
+        List<Enrollment> enrollments = enrollmentService.getEnrollmentsByCourseId(courseId);
+
+        // 获取该课程所有成绩
+        List<Grade> grades = gradeService.getGradeByCourseId(courseId);
+
+        // 将成绩按学生ID分组
+        Map<Integer, Grade> studentGradesMap = grades.stream()
+                .collect(Collectors.toMap(Grade::getStudentId, grade -> grade));
+
+        // 获取学生成绩和姓名列表
+        List<StudentGradeDTO> studentGrades = enrollments.stream()
+                .map(enrollment -> {
+                    Integer studentId = enrollment.getStudentId(); // 从 Enrollment 中获取学生ID
+                    String studentName = enrollment.getStudentName(); // 从 Enrollment 中获取学生姓名
+                    Grade grade = studentGradesMap.get(studentId);
+                    return new StudentGradeDTO(studentId, studentName, grade != null ? grade.getGrade() : null);
+                })
+                .collect(Collectors.toList());
+
+        // 计算平均分
+        BigDecimal averageGrade = studentGrades.stream()
+                .map(StudentGradeDTO::getGrade)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(new BigDecimal(studentGrades.size()), BigDecimal.ROUND_HALF_UP);
+
+        // 计算分数分布
+        List<Integer> scoreDistribution = new ArrayList<>(Collections.nCopies(10, 0));  // 初始化10个区间
+        for (StudentGradeDTO studentGrade : studentGrades) {
+            BigDecimal grade = studentGrade.getGrade();
+            if (grade != null) {
+                int index = grade.divide(new BigDecimal(10), BigDecimal.ROUND_DOWN).intValue();
+                scoreDistribution.set(index, scoreDistribution.get(index) + 1);
+            }
+        }
+
+        // 设置返回的DTO
+        CourseReportDTO courseReportDTO = new CourseReportDTO();
+        courseReportDTO.setStudentGrades(studentGrades);
+        courseReportDTO.setAverageGrade(averageGrade);
+        courseReportDTO.setScoreDistribution(scoreDistribution);
+        courseReportDTO.setTotalEnrolledStudents(enrollments.size());  // 使用 enrollments.size() 获取总选课人数
+
+        return courseReportDTO;
+    }
+
 }

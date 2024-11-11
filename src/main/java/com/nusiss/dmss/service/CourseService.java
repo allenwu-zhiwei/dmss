@@ -1,5 +1,6 @@
 package com.nusiss.dmss.service;
 
+import com.nusiss.dmss.dto.CourseReportDTO;
 import com.nusiss.dmss.entity.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,6 @@ public interface CourseService {
     Course saveCourse(Course course);
     void deleteCourse(Integer id);
     Page<Course> getCoursesWithFilters(Course course, Pageable pageable);
+
+    CourseReportDTO getCourseReport(Integer courseId);
 }
