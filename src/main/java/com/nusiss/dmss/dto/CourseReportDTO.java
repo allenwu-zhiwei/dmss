@@ -18,12 +18,14 @@ public class CourseReportDTO {
         private Integer studentId;
         private String studentName;
         private BigDecimal grade;
+        private Double attendanceRate; // 新增出勤率字段
 
         // 添加带参数的构造函数
-        public StudentGradeDTO(Integer studentId, String studentName, BigDecimal grade) {
+        public StudentGradeDTO(Integer studentId, String studentName, BigDecimal grade, Double attendanceRate) {
             this.studentId = studentId;
             this.studentName = studentName;
             this.grade = grade;
+            this.attendanceRate = attendanceRate;
         }
 
         // Getters and Setters

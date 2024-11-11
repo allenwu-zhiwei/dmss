@@ -24,4 +24,9 @@ public interface AttendanceRepository extends JpaRepository<AttendanceRecord, In
     @Query("SELECT a FROM AttendanceRecord a WHERE a.studentId = :studentId AND a.courseId = :courseId")
     AttendanceRecord findAttendanceByStudentIdAndCourseId(Integer studentId, Integer courseId);
 
+    // 统计某个学生在某门课程的总出勤记录数
+    int countByStudentIdAndCourseId(Integer studentId, Integer courseId);
+
+    // 统计某个学生在某门课程的出勤记录数（status 为 "Present"）
+    int countByStudentIdAndCourseIdAndStatus(Integer studentId, Integer courseId, String status);
 }

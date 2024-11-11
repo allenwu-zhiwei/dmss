@@ -26,6 +26,9 @@ public class CourseServiceImpl implements CourseService {
     private EnrollmentService enrollmentService;
 
     @Autowired
+    private FindAttendanceByStudentStrategy findAttendanceByStudentStrategy;
+
+    @Autowired
     private GradeService gradeService;
 
     @Override
@@ -67,13 +70,18 @@ public class CourseServiceImpl implements CourseService {
         Map<Integer, Grade> studentGradesMap = grades.stream()
                 .collect(Collectors.toMap(Grade::getStudentId, grade -> grade));
 
-        // 获取学生成绩和姓名列表
+        // 获取学生成绩和姓名列表，并加入出勤率
         List<StudentGradeDTO> studentGrades = enrollments.stream()
                 .map(enrollment -> {
-                    Integer studentId = enrollment.getStudentId(); // 从 Enrollment 中获取学生ID
-                    String studentName = enrollment.getStudentName(); // 从 Enrollment 中获取学生姓名
+                    Integer studentId = enrollment.getStudentId();
+                    String studentName = enrollment.getStudentName();
                     Grade grade = studentGradesMap.get(studentId);
-                    return new StudentGradeDTO(studentId, studentName, grade != null ? grade.getGrade() : null);
+
+                    // 查询学生的出勤率
+                    Double attendanceRate = findAttendanceByStudentStrategy.getAttendanceRateByStudentIdAndCourseId(studentId, courseId);
+
+                    // 创建新的 StudentGradeDTO，包含出勤率信息
+                    return new StudentGradeDTO(studentId, studentName, grade != null ? grade.getGrade() : null, attendanceRate);
                 })
                 .collect(Collectors.toList());
 
@@ -85,7 +93,7 @@ public class CourseServiceImpl implements CourseService {
                 .divide(new BigDecimal(studentGrades.size()), BigDecimal.ROUND_HALF_UP);
 
         // 计算分数分布
-        List<Integer> scoreDistribution = new ArrayList<>(Collections.nCopies(10, 0));  // 初始化10个区间
+        List<Integer> scoreDistribution = new ArrayList<>(Collections.nCopies(10, 0));
         for (StudentGradeDTO studentGrade : studentGrades) {
             BigDecimal grade = studentGrade.getGrade();
             if (grade != null) {
@@ -94,14 +102,13 @@ public class CourseServiceImpl implements CourseService {
             }
         }
 
-        // 设置返回的DTO
+        // 设置返回的 DTO
         CourseReportDTO courseReportDTO = new CourseReportDTO();
         courseReportDTO.setStudentGrades(studentGrades);
         courseReportDTO.setAverageGrade(averageGrade);
         courseReportDTO.setScoreDistribution(scoreDistribution);
-        courseReportDTO.setTotalEnrolledStudents(enrollments.size());  // 使用 enrollments.size() 获取总选课人数
+        courseReportDTO.setTotalEnrolledStudents(enrollments.size());
 
         return courseReportDTO;
     }
-
 }
