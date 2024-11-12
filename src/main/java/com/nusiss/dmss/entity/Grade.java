@@ -1,8 +1,7 @@
 package com.nusiss.dmss.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,8 +9,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grades")
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Grade {
 
     @Id
@@ -45,6 +46,7 @@ public class Grade {
 
     @Column(name = "update_user", length = 255)
     private String updateUser;
+
 
     // Getters and Setters
 }

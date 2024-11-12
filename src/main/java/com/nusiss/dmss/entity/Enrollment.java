@@ -1,8 +1,7 @@
 package com.nusiss.dmss.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +10,10 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name="Enrollments")
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +46,6 @@ public class Enrollment {
 
     private String createUser;
     private String updateUser;
-
-
 
 
     public enum Status {

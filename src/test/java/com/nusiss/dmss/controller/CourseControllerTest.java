@@ -1,6 +1,7 @@
 package com.nusiss.dmss.controller;
 
 import com.nusiss.dmss.config.ApiResponse;
+import com.nusiss.dmss.dto.CourseReportDTO;
 import com.nusiss.dmss.entity.Course;
 import com.nusiss.dmss.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,12 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -186,12 +191,18 @@ class CourseControllerTest {
     @Test
     void getCoursesWithFilters() {
         // 准备数据
+        int page = 0;
+        int size = 10;
         Course course = new Course();
-        course.setCourseId(1);
-        when(courseService.getCoursesWithFilters(eq(course), any())).thenReturn(new org.springframework.data.domain.PageImpl<>(Arrays.asList(course)));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> courses = new PageImpl<>(Arrays.asList(
+                new Course(),
+                new Course()
+        ));
+        when(courseService.getCoursesWithFilters(eq(course), eq(pageable))).thenReturn(courses);
 
         // 执行操作
-        ResponseEntity<ApiResponse<org.springframework.data.domain.Page<Course>>> response = courseController.getCoursesWithFilters(course, 0, 10);
+        ResponseEntity<ApiResponse<Page<Course>>> response = courseController.getCoursesWithFilters(course, page, size);
 
         // 验证结果
         assertNotNull(response);
@@ -199,6 +210,21 @@ class CourseControllerTest {
         assertTrue(response.getBody().isSuccess());
         assertEquals("Courses retrieved successfully", response.getBody().getMessage());
         assertNotNull(response.getBody().getData());
-        assertFalse(response.getBody().getData().isEmpty());
+        assertEquals(2, response.getBody().getData().getContent().size());
+    }
+
+    @Test
+    void getCourseReport() {
+        // 准备数据
+        Integer courseId = 1;
+        CourseReportDTO report = new CourseReportDTO();
+        when(courseService.getCourseReport(courseId)).thenReturn(report);
+
+        // 执行操作
+        CourseReportDTO response = courseController.getCourseReport(courseId);
+
+        // 验证结果
+        assertNotNull(response);
+        assertEquals(report, response);
     }
 }
