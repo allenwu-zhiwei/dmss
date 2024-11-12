@@ -26,7 +26,7 @@ public class CourseServiceImpl implements CourseService {
     private EnrollmentService enrollmentService;
 
     @Autowired
-    private FindAttendanceByStudentStrategy findAttendanceByStudentStrategy;
+    private AttendanceOperation findAttendanceByStudentStrategy;
 
     @Autowired
     private GradeService gradeService;

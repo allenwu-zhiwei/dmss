@@ -116,6 +116,11 @@ public class CourseController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Courses retrieved successfully", courses));
     }
 
+    /**
+     * 生成课程报告
+     * @param courseId
+     * @return
+     */
     @GetMapping("/report/{courseId}")
     public CourseReportDTO getCourseReport(@PathVariable Integer courseId) {
         return courseService.getCourseReport(courseId);

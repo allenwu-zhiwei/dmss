@@ -21,6 +21,11 @@ public class FindAttendanceByTeacherStrategy implements AttendanceOperation {
         return attendanceRepository.findAttendanceByTeacherId(teacherId);
     }
 
+    @Override
+    public Double getAttendanceRateByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+        return 0.0;
+    }
+
     //增加/创建出勤记录
     @Override
     public void createAttendanceRecord(Integer studentId, Integer courseId, AttendanceRecord newRecord) {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UpdateAttendanceStrategy implements AttendanceOperation{
@@ -57,4 +56,8 @@ public class UpdateAttendanceStrategy implements AttendanceOperation{
         return null;//此策略不执行
     }
 
+    @Override
+    public Double getAttendanceRateByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+        return 0.0;
+    }
 }

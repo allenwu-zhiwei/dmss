@@ -6,7 +6,6 @@ import com.nusiss.dmss.entity.AttendanceRecord;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AttendanceOperation {
     //增加/创建出勤记录
@@ -20,5 +19,5 @@ public interface AttendanceOperation {
     //查找老师所教课程的所有出勤记录
     List<AttendanceRecord>findAttendanceByTeacherId(Integer teacherId);
 
-
+    Double getAttendanceRateByStudentIdAndCourseId(Integer studentId, Integer courseId);
 }

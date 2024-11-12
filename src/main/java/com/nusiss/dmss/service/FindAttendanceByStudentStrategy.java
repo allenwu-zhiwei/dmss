@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FindAttendanceByStudentStrategy implements AttendanceOperation {
@@ -44,5 +43,20 @@ public class FindAttendanceByStudentStrategy implements AttendanceOperation {
     @Override
     public List<AttendanceRecord> findAttendanceByTeacherId(Integer teacherId) {
         return null;//此策略不执行
+    }
+
+
+    public Double getAttendanceRateByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+        // 查询学生在这门课程的总出勤记录数
+        int totalRecords = attendanceRepository.countByStudentIdAndCourseId(studentId, courseId);
+
+        // 查询学生在这门课程的出勤记录数（status 为 "Present"）
+        int presentRecords = attendanceRepository.countByStudentIdAndCourseIdAndStatus(studentId, courseId, "Present");
+
+        // 计算出勤率
+        if (totalRecords == 0) {
+            return 0.0; // 如果没有记录，则出勤率为 0
+        }
+        return (presentRecords / (double) totalRecords) * 100;
     }
 }
