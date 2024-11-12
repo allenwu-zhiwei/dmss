@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
-    Optional<Grade> findByStudentId(Integer studentId);
+    List<Grade> findByStudentId(Integer studentId);
 
-    Optional<Grade> findByCourseId(Integer courseId);
+    List<Grade> findByCourseId(Integer courseId);
 }

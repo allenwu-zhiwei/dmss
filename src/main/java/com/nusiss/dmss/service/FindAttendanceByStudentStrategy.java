@@ -45,6 +45,4 @@ public class FindAttendanceByStudentStrategy implements AttendanceOperation {
     public List<AttendanceRecord> findAttendanceByTeacherId(Integer teacherId) {
         return null;//此策略不执行
     }
-
-
 }

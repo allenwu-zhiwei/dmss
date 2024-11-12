@@ -25,7 +25,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Optional<Exam> getExamsByCourseId(Integer courseId) {
+    public List<Exam> getExamsByCourseId(Integer courseId) {
         return examRepository.findByCourseId(courseId);
     }
 

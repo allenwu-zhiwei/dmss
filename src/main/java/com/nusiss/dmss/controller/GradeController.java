@@ -1,6 +1,7 @@
 package com.nusiss.dmss.controller;
 
 import com.nusiss.dmss.config.ApiResponse;
+import com.nusiss.dmss.entity.Exam;
 import com.nusiss.dmss.entity.Grade;
 import com.nusiss.dmss.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,23 @@ public class GradeController {
     }
 
     @GetMapping("/student/{id}")
-    public ResponseEntity<ApiResponse<Grade>> getGradeByStudentId(@PathVariable Integer id) {
-        Optional<Grade> grade = gradeService.getGradeByStudentId(id);
-        return grade.map(value -> ResponseEntity.ok(new ApiResponse<>(true, "Grade retrieved successfully", value)))
-                .orElseGet(() -> ResponseEntity.status(404).body(new ApiResponse<>(false, "Grade not found", null)));
+    public ResponseEntity<ApiResponse<List<Grade>>> getGradeByStudentId(@PathVariable Integer id) {
+        List<Grade> grades = gradeService.getGradeByStudentId(id);
+        if (!grades.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "Grades retrieved successfully", grades));
+        } else {
+            return ResponseEntity.status(404).body(new ApiResponse<>(false, "Grades not found", null));
+        }
     }
 
     @GetMapping("/course/{id}")
-    public ResponseEntity<ApiResponse<Grade>> getGradeByCourseId(@PathVariable Integer id) {
-        Optional<Grade> grade = gradeService.getGradeByCourseId(id);
-        return grade.map(value -> ResponseEntity.ok(new ApiResponse<>(true, "Grade retrieved successfully", value)))
-                .orElseGet(() -> ResponseEntity.status(404).body(new ApiResponse<>(false, "Grade not found", null)));
+    public ResponseEntity<ApiResponse<List<Grade>>> getGradeByCourseId(@PathVariable Integer id) {
+        List<Grade> grades = gradeService.getGradeByCourseId(id);
+        if (!grades.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "Grades retrieved successfully", grades));
+        } else {
+            return ResponseEntity.status(404).body(new ApiResponse<>(false, "Grades not found", null));
+        }
     }
 
     @PostMapping

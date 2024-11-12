@@ -29,12 +29,12 @@ public class GradeServiceImpl implements GradeService{
     }
 
     @Override
-    public Optional<Grade> getGradeByStudentId(Integer studentId) {
+    public List<Grade> getGradeByStudentId(Integer studentId) {
         return gradeRepository.findByStudentId(studentId);
     }
 
     @Override
-    public Optional<Grade> getGradeByCourseId(Integer courseId) {
+    public List<Grade> getGradeByCourseId(Integer courseId) {
         return gradeRepository.findByCourseId(courseId);
     }
 
@@ -47,6 +47,5 @@ public class GradeServiceImpl implements GradeService{
     public void deleteGrade(Integer id) {
         gradeRepository.deleteById(id);
     }
-
 
 }

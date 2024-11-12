@@ -25,6 +25,9 @@ public class Enrollment {
     @Column
     private Integer studentId;
 
+    @Column
+    private String studentName;
+
     @Column(name = "course_id",nullable = false)  // 数据库列名是 student_id
     private Integer courseId;
 

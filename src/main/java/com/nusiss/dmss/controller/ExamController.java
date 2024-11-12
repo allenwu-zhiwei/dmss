@@ -31,10 +31,13 @@ public class ExamController {
     }
 
     @GetMapping("/course/{id}")
-    public ResponseEntity<ApiResponse<Exam>> getExamsByCourseId(@PathVariable Integer id) {
-        Optional<Exam> exam = examService.getExamsByCourseId(id);
-        return exam.map(value -> ResponseEntity.ok(new ApiResponse<>(true, "Exam retrieved successfully", value)))
-                .orElseGet(() -> ResponseEntity.status(404).body(new ApiResponse<>(false, "Exam not found", null)));
+    public ResponseEntity<ApiResponse<List<Exam>>> getExamsByCourseId(@PathVariable Integer id) {
+        List<Exam> exams = examService.getExamsByCourseId(id);
+        if (!exams.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "Exams retrieved successfully", exams));
+        } else {
+            return ResponseEntity.status(404).body(new ApiResponse<>(false, "Exams not found", null));
+        }
     }
 
     @PostMapping
