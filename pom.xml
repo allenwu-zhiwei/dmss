@@ -144,6 +144,24 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+
+			<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.8.8</version>
+			<executions>
+				<execution>
+					<goals>
+						<goal>prepare-agent</goal>  <!-- 启动 JaCoCo agent -->
+					</goals>
+				</execution>
+				<execution>
+					<goals>
+						<goal>report</goal>  <!-- 生成 JaCoCo 报告 -->
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
         </plugins>
 	</build>
 
