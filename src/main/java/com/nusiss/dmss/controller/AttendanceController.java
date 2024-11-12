@@ -4,10 +4,12 @@ package com.nusiss.dmss.controller;
 import com.nusiss.dmss.entity.AttendanceRecord;
 import com.nusiss.dmss.service.AttendanceOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/attendance")
@@ -70,6 +72,5 @@ public class AttendanceController {
         // 使用老师ID查找出勤记录
         return findAttendanceByTeacherStrategy.findAttendanceByTeacherId(teacherId);
     }
-
 
 }
