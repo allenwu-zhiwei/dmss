@@ -135,4 +135,56 @@ class FindAttendanceByStudentStrategyTest {
         // 验证返回值为 null（方法逻辑为直接返回 null）
         assertNull(result, "Expected result to be null");
     }
+
+    @Test
+    void testGetAttendanceRate_NoRecords() {
+        // 准备测试数据
+        Integer studentId = 1;
+        Integer courseId = 101;
+
+        // 模拟Repository返回没有记录的情况
+        when(attendanceRepository.countByStudentIdAndCourseId(studentId, courseId)).thenReturn(0);
+
+        // 调用被测试方法
+        Double result = findAttendanceByStudentStrategy.getAttendanceRateByStudentIdAndCourseId(studentId, courseId);
+
+        // 验证返回值为 0.0
+        assertEquals(0.0, result, "Expected attendance rate to be 0.0 when there are no records");
+    }
+
+    @Test
+    void testGetAttendanceRate_PartialAttendance() {
+        // 准备测试数据
+        Integer studentId = 1;
+        Integer courseId = 101;
+
+        // 模拟Repository返回部分出勤记录的情况
+        when(attendanceRepository.countByStudentIdAndCourseId(studentId, courseId)).thenReturn(10); // 总记录数
+        when(attendanceRepository.countByStudentIdAndCourseIdAndStatus(studentId, courseId, "Present")).thenReturn(6); // 出勤记录数
+
+        // 调用被测试方法
+        Double result = findAttendanceByStudentStrategy.getAttendanceRateByStudentIdAndCourseId(studentId, courseId);
+
+        // 验证返回值为正确的出勤率
+        assertEquals(60.0, result, "Expected attendance rate to be 60.0 when 6 out of 10 records are 'Present'");
+    }
+
+    @Test
+    void testGetAttendanceRate_FullAttendance() {
+        // 准备测试数据
+        Integer studentId = 1;
+        Integer courseId = 101;
+
+        // 模拟Repository返回全勤记录的情况
+        when(attendanceRepository.countByStudentIdAndCourseId(studentId, courseId)).thenReturn(10); // 总记录数
+        when(attendanceRepository.countByStudentIdAndCourseIdAndStatus(studentId, courseId, "Present")).thenReturn(10); // 出勤记录数
+
+        // 调用被测试方法
+        Double result = findAttendanceByStudentStrategy.getAttendanceRateByStudentIdAndCourseId(studentId, courseId);
+
+        // 验证返回值为 100.0
+        assertEquals(100.0, result, "Expected attendance rate to be 100.0 when all 10 records are 'Present'");
+    }
+
+
 }

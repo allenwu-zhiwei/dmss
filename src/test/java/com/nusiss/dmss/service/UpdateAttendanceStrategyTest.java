@@ -151,4 +151,21 @@ class UpdateAttendanceStrategyTest {
         // 验证返回值为 null（方法逻辑为直接返回 null）
         assertNull(result, "Expected result to be null");
     }
+
+    @Test
+    void testGetAttendanceRateByStudentIdAndCourseId_NotImplemented() {
+        // 准备测试数据
+        Integer studentId = 1;
+        Integer courseId = 101;
+
+        // 调用被测试方法
+        Double result = updateAttendanceStrategy.getAttendanceRateByStudentIdAndCourseId(studentId, courseId);
+
+        // 验证返回值为默认值 0.0
+        assertEquals(0.0, result, "Expected attendance rate to be 0.0 as the method is not implemented");
+
+        // 验证Repository方法未被调用
+        verifyNoInteractions(attendanceRepository);
+    }
+
 }
