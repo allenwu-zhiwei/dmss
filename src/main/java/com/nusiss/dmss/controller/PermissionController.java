@@ -84,4 +84,15 @@ public class PermissionController {
         Set<Permission> permissions = permissionService.findPermissionsByUserRoles(userId);
         return ResponseEntity.ok(permissions);
     }
+
+    /**
+     * 批量插入权限
+     * @param permissions
+     * @return
+     */
+    @PostMapping("/batch")
+    public ResponseEntity<List<Permission>> saveAllPermissions(@RequestBody List<Permission> permissions) {
+        List<Permission> savedPermissions = permissionService.saveAllPermissions(permissions);
+        return new ResponseEntity<>(savedPermissions, HttpStatus.CREATED);
+    }
 }
