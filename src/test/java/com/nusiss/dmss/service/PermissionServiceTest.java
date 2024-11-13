@@ -9,10 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -153,5 +150,36 @@ class PermissionServiceTest {
         assertEquals(1, permissions.size());
         assertEquals("/api/test", permissions.iterator().next().getEndpoint());
         assertEquals("GET", permissions.iterator().next().getMethod());
+    }
+    @Test
+    void testSaveAllPermissions() {
+        // 准备测试数据
+        Permission permission1 = new Permission();
+        permission1.setEndpoint("/api/users");
+        permission1.setMethod("GET");
+        permission1.setCreateUser("admin");
+        permission1.setCreateDatetime(LocalDateTime.now());
+
+        Permission permission2 = new Permission();
+        permission2.setEndpoint("/api/orders");
+        permission2.setMethod("POST");
+        permission2.setCreateUser("admin");
+        permission2.setCreateDatetime(LocalDateTime.now());
+
+        List<Permission> permissions = Arrays.asList(permission1, permission2);
+
+        // 模拟 DAO 层的行为
+        when(permissionRepository.saveAll(anyList())).thenReturn(permissions);
+
+        // 调用 Service 方法
+        List<Permission> result = permissionService.saveAllPermissions(permissions);
+
+        // 验证结果
+        assertEquals(2, result.size());
+        assertEquals("/api/users", result.get(0).getEndpoint());
+        assertEquals("POST", result.get(1).getMethod());
+
+        // 验证是否调用了 DAO 层的 saveAll 方法
+
     }
 }

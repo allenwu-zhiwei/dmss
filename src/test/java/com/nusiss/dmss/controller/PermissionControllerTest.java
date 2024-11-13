@@ -10,11 +10,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,15 +27,19 @@ class PermissionControllerTest {
     @Mock
     private PermissionService permissionService;
 
+
+
     @InjectMocks
     private PermissionController permissionController;
 
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(permissionController).build();
+        objectMapper = new ObjectMapper(); // 初始化 ObjectMapper
     }
 
     @Test
@@ -130,5 +134,29 @@ class PermissionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].endpoint").value("/api/test"))
                 .andExpect(jsonPath("$[0].method").value("GET"));
+    }
+
+    @Test
+    void saveAllPermissions() throws Exception {
+        Permission permission1 = new Permission();
+        permission1.setEndpoint("/api/test1");
+        permission1.setMethod("GET");
+
+        Permission permission2 = new Permission();
+        permission2.setEndpoint("/api/test2");
+        permission2.setMethod("POST");
+
+        List<Permission> permissions = List.of(permission1, permission2);
+
+        when(permissionService.saveAllPermissions(any(List.class))).thenReturn(permissions);
+
+        mockMvc.perform(post("/api/permissions/batch")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[{\"endpoint\":\"/api/test1\", \"method\":\"GET\"}, {\"endpoint\":\"/api/test2\", \"method\":\"POST\"}]"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$[0].endpoint").value("/api/test1"))
+                .andExpect(jsonPath("$[0].method").value("GET"))
+                .andExpect(jsonPath("$[1].endpoint").value("/api/test2"))
+                .andExpect(jsonPath("$[1].method").value("POST"));
     }
 }
