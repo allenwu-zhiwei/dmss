@@ -4,6 +4,7 @@ import com.nusiss.dmss.entity.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,4 +17,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     Set<Permission> findPermissionsByUserRoles(Integer userId);
 
     Optional<Permission> findByEndpointAndMethod(String endpoint, String method);
+
+    // 使用 JPA 自带的 saveAll 方法来进行批量插入
+    <S extends Permission> List<S> saveAll(Iterable<S> permissions);
 }

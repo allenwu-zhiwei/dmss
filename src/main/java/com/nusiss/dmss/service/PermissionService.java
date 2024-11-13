@@ -20,4 +20,7 @@ public interface PermissionService {
 
     // 根据用户 ID 查找用户角色对应的权限集合
     Set<Permission> findPermissionsByUserRoles(Integer userId);
+
+    // 批量插入权限记录
+    List<Permission> saveAllPermissions(List<Permission> permissions);
 }

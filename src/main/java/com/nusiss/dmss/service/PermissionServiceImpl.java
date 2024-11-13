@@ -59,4 +59,10 @@ public class PermissionServiceImpl implements PermissionService {
         // 调用 DAO 层方法查询权限集合
         return permissionRepository.findPermissionsByUserRoles(userId);
     }
+
+    @Override
+    public List<Permission> saveAllPermissions(List<Permission> permissions) {
+        // 调用 DAO 层的 saveAll 方法进行批量插入
+        return permissionRepository.saveAll(permissions);
+    }
 }
