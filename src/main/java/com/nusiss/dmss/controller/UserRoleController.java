@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user-roles")
+@CrossOrigin(origins = "*")
 public class UserRoleController {
 
     @Autowired

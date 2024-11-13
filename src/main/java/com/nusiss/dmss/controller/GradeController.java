@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/grade")
+@CrossOrigin(origins = "*")
 public class GradeController {
 
     @Autowired

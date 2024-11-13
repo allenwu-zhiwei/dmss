@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/exam")
+@CrossOrigin(origins = "*")
 public class ExamController {
 
     @Autowired

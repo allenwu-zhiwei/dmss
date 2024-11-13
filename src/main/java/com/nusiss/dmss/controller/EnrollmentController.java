@@ -17,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/enrollment")
 @Slf4j
+@CrossOrigin(origins = "*")
 public class EnrollmentController {
 
     @Autowired
