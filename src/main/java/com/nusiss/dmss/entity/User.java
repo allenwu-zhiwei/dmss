@@ -1,5 +1,6 @@
 package com.nusiss.dmss.entity;
 
+import com.nusiss.dmss.entity.observer.Observer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "Users")
 @Setter
 @Getter
-public class User {
+public class User implements Observer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
@@ -40,4 +41,16 @@ public class User {
         STUDENT, TEACHER, ADMIN, ADMINISTRATOR
     }
 
+    @Override
+    public void update(Notifications notification) {
+        System.out.println("User " + username + " has received a notification: " + notification.getMessage());
+    }
+
+    public void subscribeToNotification(Notifications notification) {
+        notification.addObserver(this);
+    }
+
+    public void unsubscribeFromNotification(Notifications notification) {
+        notification.removeObserver(this);
+    }
 }

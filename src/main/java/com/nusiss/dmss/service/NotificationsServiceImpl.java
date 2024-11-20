@@ -33,7 +33,9 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications saveNotification(Notifications notification) {
-        return notificationRepository.save(notification);
+        Notifications savedNotification = notificationRepository.save(notification);
+        savedNotification.triggerNotification();
+        return savedNotification;
     }
 
     @Override
